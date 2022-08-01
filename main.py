@@ -1,18 +1,30 @@
+import os
 import typer
 import numpy as np
 import keras
 
 app = typer.Typer()
 
+model_dir = ''
 hacked_path = 'hacked_model/'
 
 
-def get_model(model_path: str):
-    """
-    :param model_path: model path of h5 file
-    :return: keras h5 model
-    """
-    model = keras.models.load_model(model_path)
+def find_model(path):
+    # search for h5 file
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('.h5'):
+                model_h5 = file
+                print(model_h5)
+                full_path = os.path.join(root, file)
+                print(full_path)
+                return str(full_path)
+
+
+def get_model(path: str):
+    # load the file with keras
+    model_h5 = find_model(path)
+    model = keras.models.load_model(model_h5)
     return model
 
 
@@ -72,7 +84,6 @@ def modify_output_bias(model_path: str, index: int):
 
 
 # def update_model(bias):
-    # refit the model with the new bias ?
     # hacked_model.save('hacked_model/model.h5')
 
 
